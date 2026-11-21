@@ -344,8 +344,22 @@ function clearAllRegisterErrors() {
   hideMessage('registerMessage');
 }
 
-// commit7
-
+// "Clear form" button: empty everything and hide the type fields again
+function resetRegisterForm() {
+  document.getElementById('registerForm').reset();
+  document.getElementById('formBody').style.display = 'none';
+  document.getElementById('patientFields').style.display = 'none';
+  document.getElementById('doctorFields').style.display = 'none';
+  document.getElementById('receptionistFields').style.display = 'none';
+  document.getElementById('typeCardPatient').className = 'type-option';
+  document.getElementById('typeCardDoctor').className = 'type-option';
+  document.getElementById('typeCardReceptionist').className = 'type-option';
+  document.getElementById('registerButton').value = 'Create Account';
+  clearErrors(allRegisterFields);
+  clearErrors(patientFields);
+  clearErrors(doctorFields);
+  clearErrors(receptionistFields);
+}
 // Fill the department list of the doctor fieldset from the departments array
 for (const department of departments) {
   addOption(
