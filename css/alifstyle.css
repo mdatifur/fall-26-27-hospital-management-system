@@ -1,0 +1,105 @@
+
+.auth-box {
+  max-width: 480px;
+  margin: 40px auto;
+}
+
+.auth-box.wide {
+  max-width: 720px;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.demo-accounts {
+  font-size: 0.88rem;
+}
+
+.demo-accounts td {
+  padding: 2px 8px 2px 0;
+}
+
+
+.queue-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.queue-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(14, 77, 69, 0.08);
+  border-top: 6px solid #1f9d8a;
+}
+
+.queue-box .big {
+  font-size: 2.4rem;
+  font-weight: bold;
+  color: #136b5f;
+}
+
+.queue-box.serving {
+  background-color: #e8f7f2;
+  border-top-color: #136b5f;
+}
+
+.queue-buttons {
+  margin-bottom: 14px;
+}
+
+.queue-buttons .btn {
+  margin: 2px 4px 2px 0;
+}
+
+
+.timeline {
+  border-left: 3px solid #d5e6e2;
+  margin: 10px 0 10px 10px;
+  padding-left: 18px;
+}
+
+.timeline-item {
+  position: relative;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(14, 77, 69, 0.08);
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -27px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #1f9d8a;
+}
+
+.timeline-item .log-time {
+  font-size: 0.8rem;
+  color: #6b7c84;
+}
+
+
+.prescription-paper {
+  background-color: #ffffff;
+  border: 1px solid #d5e6e2;
+  border-left: 8px solid #1f9d8a;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+}
+
+.prescription-paper h4 {
+  color: #136b5f;
+  margin-bottom: 4px;
+}

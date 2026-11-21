@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Doctor dashboard of Evercare Medical Center">
+  <title>Doctor Dashboard | Evercare Medical Center</title>
+  <link rel="stylesheet" href="css/shohanStyle.css">
+  <link rel="stylesheet" href="css/alifStyle.css">
+  <link rel="stylesheet" href="css/saadStyle.css">
+  <link rel="stylesheet" href="css/najirStyle.css">
+</head>
+
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">Ever<span>care</span> Medical Center</a>
+    <div class="user-info">
+      <span class="badge doctor">Doctor</span>
+      <span>Welcome, <span id="welcomeName"></span></span>
+      <a href="index.html" class="btn btn-small btn-light">Logout</a>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <button type="button" id="nav-queueSection" onclick="showSection('queueSection')">Patient Queue</button>
+    <button type="button" id="nav-appointmentsSection" onclick="showSection('appointmentsSection')">My
+      Appointments</button>
+    <button type="button" id="nav-prescriptionSection"
+      onclick="showSection('prescriptionSection')">Prescriptions</button>
+    <button type="button" id="nav-timelineSection" onclick="showSection('timelineSection')">Medical Timeline</button>
+    <button type="button" id="nav-notificationsSection"
+      onclick="showSection('notificationsSection')">Notifications</button>
+    <button type="button" id="nav-profileSection" onclick="showSection('profileSection')">My Profile</button>
+  </nav>
+
+  <main class="container">
+
+    
+
+    <section id="queueSection" class="page-section">
+      <h2 class="page-title">Smart Patient Queue</h2>
+      <p class="page-subtitle" id="queueSubtitle"></p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="dashToday">0</div>
+          <div class="stat-label">Today's appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="dashWaiting">0</div>
+          <div class="stat-label">Waiting patients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="dashCompleted">0</div>
+          <div class="stat-label">Completed today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="dashPatients">0</div>
+          <div class="stat-label">My patients (all time)</div>
+        </div>
+      </div>
+
+      <div id="queueMessage" class="message"></div>
+
+      <div class="queue-panel">
+        <div class="queue-box serving">
+          <div class="hint">Currently serving</div>
+          <div class="big" id="servingToken">-</div>
+          <div id="servingName">Nobody</div>
+        </div>
+        <div class="queue-box">
+          <div class="hint">Next patient</div>
+          <div class="big" id="nextToken">-</div>
+          <div id="nextName">Nobody</div>
+        </div>
+        <div class="queue-box">
+          <div class="hint">Patients waiting</div>
+          <div class="big" id="waitingCount">0</div>
+          <div class="hint">in the queue now</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Today's queue</h3>
+        <div class="queue-buttons">
+          <button type="button" class="btn" onclick="callNextPatient()">Call Next Patient</button>
+          <button type="button" class="btn btn-success" onclick="completeCurrent()">Mark Current as Completed</button>
+          <button type="button" class="btn btn-secondary" onclick="skipCurrent()">Skip Current</button>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Patient</th>
+                <th>Appointment time</th>
+                <th>Queue status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="queueBody"></tbody>
+          </table>
+        </div>
+        <p class="hint">Only patients who have checked in at reception get a token.</p>
+      </div>
+    </section>
+
+
+    
+
+    <section id="appointmentsSection" class="page-section">
+      <h2 class="page-title">My Appointments</h2>
+      <p class="page-subtitle">All appointments with you. Update their status or schedule a follow-up visit.</p>
+
+      <div id="appointmentMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Schedule a follow-up visit</h3>
+            <form id="followForm" onsubmit="return saveFollowUp()">
+              <fieldset>
+                <legend>Follow-up details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="followPatient">Patient:</label></td>
+                    <td><select id="followPatient">
+                        <option value="">-- Select patient --</option>
+                      </select><span class="error" id="followPatientError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="followDate">Date:</label></td>
+                    <td><input type="date" id="followDate" onchange="refreshFollowSlots()"><span class="error"
+                        id="followDateError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="followTime">Time:</label></td>
+                    <td><select id="followTime">
+                        <option value="">-- Select time --</option>
+                      </select><span class="error" id="followTimeError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="followNote">Note:</label></td>
+                    <td><input type="text" id="followNote" placeholder="e.g. blood pressure check"><span class="error"
+                        id="followNoteError"></span></td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" class="btn" value="Schedule Follow-up">
+            </form>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>Appointments</h3>
+            <div class="search-bar">
+              <input type="text" id="appointmentSearch" placeholder="Search by patient, reason or id..."
+                onkeyup="renderAppointments()">
+              <select id="appointmentStatusFilter" onchange="renderAppointments()">
+                <option value="All">Any status</option>
+                <option value="Pending">Pending</option>
+                <option value="Checked-in">Checked-in</option>
+                <option value="In Consultation">In Consultation</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <p class="result-count" id="appointmentCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="appointmentBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="prescriptionSection" class="page-section">
+      <h2 class="page-title">Digital Prescription Builder</h2>
+      <p class="page-subtitle">You enter every detail yourself. The system gives no medical advice. (Sample data is
+        fictional.)</p>
+
+      <div id="rxMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>New prescription</h3>
+            <form id="rxForm" onsubmit="return savePrescription()">
+              <fieldset>
+                <legend>Prescription details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="rxPatient">Patient:</label></td>
+                    <td><select id="rxPatient">
+                        <option value="">-- Select patient --</option>
+                      </select><span class="error" id="rxPatientError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="rxDiagnosis">Diagnosis:</label></td>
+                    <td><input type="text" id="rxDiagnosis" placeholder="Diagnosis"><span class="error"
+                        id="rxDiagnosisError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="rxMedicine">Medicine name:</label></td>
+                    <td><input type="text" id="rxMedicine" placeholder="Medicine"><span class="error"
+                        id="rxMedicineError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="rxDosage">Dosage:</label></td>
+                    <td><input type="text" id="rxDosage" placeholder="e.g. 500 mg"><span class="error"
+                        id="rxDosageError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="rxFrequency">Frequency:</label></td>
+                    <td>
+                      <select id="rxFrequency">
+                        <option value="">-- Select --</option>
+                        <option value="Once a day">Once a day</option>
+                        <option value="Twice a day">Twice a day</option>
+                        <option value="Three times a day">Three times a day</option>
+                        <option value="Once at night">Once at night</option>
+                        <option value="When needed">When needed</option>
+                      </select>
+                      <span class="error" id="rxFrequencyError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="rxDuration">Duration:</label></td>
+                    <td><input type="text" id="rxDuration" placeholder="e.g. 7 days"><span class="error"
+                        id="rxDurationError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="rxInstructions">Instructions:</label></td>
+                    <td><textarea id="rxInstructions" rows="3" cols="30"
+                        placeholder="e.g. Take after meals"></textarea><span class="error"
+                        id="rxInstructionsError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="rxTests">Recommended tests:</label></td>
+                    <td><input type="text" id="rxTests" placeholder="e.g. Blood test (leave empty for none)"></td>
+                  </tr>
+                  <tr>
+                    <td><label for="rxFollowUp">Follow-up date:</label></td>
+                    <td><input type="date" id="rxFollowUp"><span class="error" id="rxFollowUpError"></span></td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" class="btn" value="Add Prescription">
+              <button type="button" class="btn btn-secondary" onclick="resetPrescriptionForm()">Clear</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>Prescription preview</h3>
+            <div id="rxPreview">
+              <p class="empty-row">Add or choose a prescription to preview it here.</p>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Prescriptions I wrote</h3>
+            <div class="search-bar">
+              <input type="text" id="rxSearch" placeholder="Search by patient, medicine or diagnosis..."
+                onkeyup="renderPrescriptions()">
+            </div>
+            <p class="result-count" id="rxCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Patient</th>
+                    <th>Diagnosis</th>
+                    <th>Medicine</th>
+                    <th>Follow-up</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="rxBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="timelineSection" class="page-section">
+      <h2 class="page-title">Patient Medical Timeline</h2>
+      <p class="page-subtitle">Choose one of your patients to see their history, oldest first.</p>
+      <div class="card">
+        <label for="timelinePatient">Patient:</label>
+        <select id="timelinePatient" onchange="renderTimeline()">
+          <option value="">-- Select patient --</option>
+        </select>
+        <p class="hint" id="timelineSummary"></p>
+        <div class="timeline" id="timelineList"></div>
+      </div>
+    </section>
+
+
+    
+
+    <section id="notificationsSection" class="page-section">
+      <h2 class="page-title">Notifications</h2>
+      <p class="page-subtitle">Appointment updates, queue changes and other events. <span id="notificationCount"
+          class="hint"></span></p>
+      <div class="card">
+        <button type="button" class="btn btn-small btn-secondary" onclick="markAllRead()">Mark all as read</button>
+        <div class="notice-board" id="notificationList"></div>
+      </div>
+    </section>
+
+
+   
+
+    <section id="profileSection" class="page-section">
+      <h2 class="page-title">My Profile</h2>
+      <p class="page-subtitle">Your account details. Name, email and phone can be edited.</p>
+      <div id="profileMessage" class="message"></div>
+      <div class="card">
+        <form id="profileForm" onsubmit="return saveProfile()">
+          <fieldset>
+            <legend>Account details</legend>
+            <table class="form-table">
+              <tr>
+                <td><label for="profileName">Full name:</label></td>
+                <td><input type="text" id="profileName"><span class="error" id="profileNameError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profileEmail">Email:</label></td>
+                <td><input type="email" id="profileEmail"><span class="error" id="profileEmailError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profilePhone">Phone:</label></td>
+                <td><input type="tel" id="profilePhone"><span class="error" id="profilePhoneError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profileUsername">Username:</label></td>
+                <td><input type="text" id="profileUsername" readonly></td>
+              </tr>
+              <tr>
+                <td><label for="profileRole">Role:</label></td>
+                <td><input type="text" id="profileRole" readonly></td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="hint" id="profileDetails"></p><br>
+          <input type="submit" class="btn" value="Save Profile">
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 Evercare Medical Center &middot; Web Technologies course project
+  </footer>
+
+  <script src="js/shohanData.js"></script>
+  <script src="js/alifData.js"></script>
+  <script src="js/saadData.js"></script>
+  <script src="js/najirData.js"></script>
+  <script src="js/shohanCommon.js"></script>
+  <script src="js/alifCommon.js"></script>
+  <script src="js/saadCommon.js"></script>
+  <script src="js/najirCommon.js"></script>
+  <script src="js/doctor.js"></script>
+</body>
+
+</html>
