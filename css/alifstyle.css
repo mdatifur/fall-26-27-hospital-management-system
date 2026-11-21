@@ -56,3 +56,50 @@
 .queue-buttons .btn {
   margin: 2px 4px 2px 0;
 }
+
+
+.timeline {
+  border-left: 3px solid #d5e6e2;
+  margin: 10px 0 10px 10px;
+  padding-left: 18px;
+}
+
+.timeline-item {
+  position: relative;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(14, 77, 69, 0.08);
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -27px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #1f9d8a;
+}
+
+.timeline-item .log-time {
+  font-size: 0.8rem;
+  color: #6b7c84;
+}
+
+
+.prescription-paper {
+  background-color: #ffffff;
+  border: 1px solid #d5e6e2;
+  border-left: 8px solid #1f9d8a;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+}
+
+.prescription-paper h4 {
+  color: #136b5f;
+  margin-bottom: 4px;
+}
