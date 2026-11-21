@@ -1136,6 +1136,101 @@ function rescheduleAllAppointments() {
     }
 
 
+    // Draws the affected list, the three numbers and the summary table
+    function renderEmergency() {
+      let rows = '';
+      let summaryRows = '';
+      let done = 0;
+
+      for (const item of emergencyAffected) {
+        rows +=
+          '<tr>' +
+          '<td>' +
+          item.patientId +
+          '</td>' +
+          '<td><strong>' +
+          patientName(item.patientId) +
+          '</strong></td>' +
+          '<td>' +
+          item.originalDate +
+          '</td>' +
+          '<td>' +
+          item.originalTime +
+          '</td>' +
+          "<td><span class='badge " +
+          appointmentColor(item.status) +
+          "'>" +
+          item.status +
+          '</span></td>' +
+          '</tr>';
+
+        let resultColor = 'orange';
+        let newText = '&mdash;';
+        if (item.result === 'Rescheduled') {
+          resultColor = 'green';
+          newText = item.newDate + ' ' + item.newTime;
+          done++;
+        } else if (item.result === 'No slot found') {
+          resultColor = 'red';
+        }
+        summaryRows +=
+          '<tr>' +
+          '<td><strong>' +
+          patientName(item.patientId) +
+          "</strong><br><span class='hint'>" +
+          item.patientId +
+          ' &middot; ' +
+          item.appointmentId +
+          '</span></td>' +
+          '<td>' +
+          item.originalDate +
+          ' ' +
+          item.originalTime +
+          '</td>' +
+          '<td>' +
+          newText +
+          '</td>' +
+          "<td><span class='badge " +
+          resultColor +
+          "'>" +
+          item.result +
+          '</span></td>' +
+          '<td>' +
+          item.notification +
+          '</td>' +
+          '</tr>';
+      }
+
+      if (emergencyAffected.length === 0) {
+        rows =
+          "<tr><td colspan='5' class='empty-row'>No affected appointments.</td></tr>";
+        summaryRows =
+          "<tr><td colspan='5' class='empty-row'>Nothing to show yet.</td></tr>";
+      }
+
+      document.getElementById('emergencyBody').innerHTML = rows;
+      document.getElementById('emergencySummaryBody').innerHTML = summaryRows;
+      document.getElementById('emergencyCount').innerHTML =
+        emergencyPeriod === null
+          ? 'Submit the unavailable schedule to see the affected appointments.'
+          : 'Total affected appointments: ' + emergencyAffected.length;
+      document.getElementById('emgTotal').innerHTML = emergencyAffected.length;
+      document.getElementById('emgDone').innerHTML = done;
+      document.getElementById('emgPending').innerHTML =
+        emergencyAffected.length - done;
+      document.getElementById('rescheduleAllButton').disabled =
+        emergencyAffected.length - done === 0;
+    }
+
+    function resetEmergencyForm() {
+      document.getElementById('emergencyForm').reset();
+      clearErrors(['emgDoctor', 'emgDate', 'emgStart', 'emgEnd', 'emgReason']);
+      emergencyAffected = [];
+      emergencyPeriod = null;
+      hideMessage('emergencyMessage');
+      renderEmergency();
+    }
+
     /* START: runs once when the page has loaded (scripts are at the end of <body>) */
     if (currentUser === null) {
       showAccessDenied('Receptionist');
