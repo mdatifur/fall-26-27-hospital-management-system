@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin dashboard of Evercare Medical Center">
+  <title>Admin Dashboard | Evercare Medical Center</title>
+  <link rel="stylesheet" href="css/shohanStyle.css">
+  <link rel="stylesheet" href="css/alifStyle.css">
+  <link rel="stylesheet" href="css/saadStyle.css">
+
+</head>
+
+<body>
+
+  <!--  HEADER  -->
+  <header class="header">
+    <a href="index.html" class="logo">Ever<span>care</span> Medical Center</a>
+    <div class="user-info">
+      <span class="badge admin">Admin</span>
+      <span>Welcome, <span id="welcomeName"></span></span>
+      <a href="index.html" class="btn btn-small btn-light">Logout</a>
+    </div>
+  </header>
+
+  <!--  NAVIGATION: each button shows one section  -->
+  <nav class="topnav">
+    <button type="button" id="nav-statsSection" onclick="showSection('statsSection'); generateReport()">Statistics
+      Report</button>
+    <button type="button" id="nav-workloadSection" onclick="showSection('workloadSection'); renderWorkload()">Doctor
+      Workload</button>
+    <button type="button" id="nav-medicineSection" onclick="showSection('medicineSection')">Medicine Stock</button>
+    <button type="button" id="nav-doctorsSection" onclick="showSection('doctorsSection')">Manage Doctors</button>
+    <button type="button" id="nav-patientsSection" onclick="showSection('patientsSection')">Manage Patients</button>
+    <button type="button" id="nav-appointmentsSection"
+      onclick="showSection('appointmentsSection')">Appointments</button>
+    <button type="button" id="nav-activitySection" onclick="showSection('activitySection'); renderLog()">Activity
+      History</button>
+    <button type="button" id="nav-notificationsSection"
+      onclick="showSection('notificationsSection')">Notifications</button>
+    <button type="button" id="nav-profileSection" onclick="showSection('profileSection')">My Profile</button>
+  </nav>
+
+  <main class="container">
+
+    <!-- UNIQUE FEATURE 1: HOSPITAL STATISTICS REPORT Counts are worked out with loops over the data arrays. -->
+
+    <section id="statsSection" class="page-section">
+      <h2 class="page-title">Hospital Statistics Report</h2>
+      <p class="page-subtitle">A live summary of doctors, patients and appointments.
+        <span id="reportTime" class="hint"></span>
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="statDoctors">0</div>
+          <div class="stat-label">Total doctors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statPatients">0</div>
+          <div class="stat-label">Total patients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statAppointments">0</div>
+          <div class="stat-label">Total appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statToday">0</div>
+          <div class="stat-label">Today's appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statWaiting">0</div>
+          <div class="stat-label">Waiting patients (queue)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statPending">0</div>
+          <div class="stat-label">Pending appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statCompleted">0</div>
+          <div class="stat-label">Completed appointments</div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Patients by department</h3>
+            <p class="hint">Different patients who have a booked (not cancelled) appointment in the department.</p>
+            <div id="deptChart"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h3>Appointments by status</h3>
+            <div id="statusChart"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- UNIQUE FEATURE 2: DOCTOR WORKLOAD MONITOR -->
+    <section id="workloadSection" class="page-section">
+      <h2 class="page-title">Doctor Workload Monitor</h2>
+      <p class="page-subtitle" id="workloadRule"></p>
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Department</th>
+                <th>Today's appointments</th>
+                <th>Completed</th>
+                <th>Pending</th>
+                <th>Workload</th>
+              </tr>
+            </thead>
+            <tbody id="workloadBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- UNIQUE FEATURE 3: MEDICINE STOCK AND EXPIRY MONITOR -->
+    <section id="medicineSection" class="page-section">
+      <h2 class="page-title">Medicine Stock and Expiry Monitor</h2>
+      <p class="page-subtitle" id="medicineRule"></p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="medTotal">0</div>
+          <div class="stat-label">Total medicines</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="medLow">0</div>
+          <div class="stat-label">Low-stock medicines</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="medExpired">0</div>
+          <div class="stat-label">Expired medicines</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="medSoon">0</div>
+          <div class="stat-label">Expiring soon</div>
+        </div>
+      </div>
+
+      <div id="medicineMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3 id="medicineFormTitle">Add Medicine</h3>
+            <form id="medicineForm" onsubmit="return saveMedicine()">
+              <fieldset>
+                <legend>Medicine details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="medName">Medicine name:</label></td>
+                    <td><input type="text" id="medName" placeholder="e.g. Paracetamol 500 mg"><span class="error"
+                        id="medNameError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="medCategory">Category:</label></td>
+                    <td><input type="text" id="medCategory" placeholder="e.g. Antibiotic"><span class="error"
+                        id="medCategoryError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="medQuantity">Available quantity:</label></td>
+                    <td><input type="number" id="medQuantity" min="0"><span class="error" id="medQuantityError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="medMin">Minimum stock level:</label></td>
+                    <td><input type="number" id="medMin" min="0"><span class="error" id="medMinError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="medExpiry">Expiry date:</label></td>
+                    <td><input type="date" id="medExpiry"><span class="error" id="medExpiryError"></span></td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" id="medicineSaveButton" class="btn" value="Add Medicine">
+              <button type="button" class="btn btn-secondary" onclick="resetMedicineForm()">Cancel</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>Medicine stock</h3>
+            <div class="search-bar">
+              <input type="text" id="medicineSearch" placeholder="Search by name, category or id..."
+                onkeyup="renderMedicines()">
+              <select id="medicineFilter" onchange="renderMedicines()">
+                <option value="All">All medicines</option>
+                <option value="Low">Low stock</option>
+                <option value="Expired">Expired</option>
+                <option value="Soon">Expiring soon</option>
+                <option value="OK">OK</option>
+              </select>
+            </div>
+            <p class="result-count" id="medicineCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Medicine</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Min</th>
+                    <th>Expiry</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="medicineBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- MANAGE DOCTORS: Create, Read, Update, Delete, Search + approvals -->
+    <section id="doctorsSection" class="page-section">
+      <h2 class="page-title">Manage Doctors</h2>
+      <p class="page-subtitle">Add doctors, edit their details and approve new staff accounts.</p>
+
+      <div id="doctorMessage" class="message"></div>
+
+      <div class="card">
+        <h3>Accounts waiting for approval</h3>
+        <div id="pendingList"></div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3 id="doctorFormTitle">Add Doctor</h3>
+            <form id="doctorForm" onsubmit="return saveDoctor()">
+              <fieldset>
+                <legend>Doctor details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="docName">Name:</label></td>
+                    <td><input type="text" id="docName" placeholder="Dr. Full Name"><span class="error"
+                        id="docNameError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="docSpecialization">Specialization:</label></td>
+                    <td><input type="text" id="docSpecialization"><span class="error"
+                        id="docSpecializationError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="docQualification">Qualification:</label></td>
+                    <td><input type="text" id="docQualification"><span class="error" id="docQualificationError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="docDepartment">Department:</label></td>
+                    <td><select id="docDepartment">
+                        <option value="">-- Select --</option>
+                      </select><span class="error" id="docDepartmentError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="docFee">Fee (Tk):</label></td>
+                    <td><input type="number" id="docFee" min="100" max="10000"><span class="error"
+                        id="docFeeError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="docRoom">Room:</label></td>
+                    <td><input type="text" id="docRoom" placeholder="e.g. Room 201"><span class="error"
+                        id="docRoomError"></span></td>
+                  </tr>
+                  <tr>
+                    <td>Available days:</td>
+                    <td>
+                      <input type="checkbox" id="adSun" name="adminDay" value="Sun"><label for="adSun"
+                        class="option-label">Sun</label>
+                      <input type="checkbox" id="adMon" name="adminDay" value="Mon"><label for="adMon"
+                        class="option-label">Mon</label>
+                      <input type="checkbox" id="adTue" name="adminDay" value="Tue"><label for="adTue"
+                        class="option-label">Tue</label>
+                      <input type="checkbox" id="adWed" name="adminDay" value="Wed"><label for="adWed"
+                        class="option-label">Wed</label>
+                      <input type="checkbox" id="adThu" name="adminDay" value="Thu"><label for="adThu"
+                        class="option-label">Thu</label>
+                      <input type="checkbox" id="adFri" name="adminDay" value="Fri"><label for="adFri"
+                        class="option-label">Fri</label>
+                      <input type="checkbox" id="adSat" name="adminDay" value="Sat"><label for="adSat"
+                        class="option-label">Sat</label>
+                      <span class="error" id="adminDayError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Status:</td>
+                    <td>
+                      <input type="radio" id="docStatusActive" name="docStatus" value="Active" checked>
+                      <label for="docStatusActive" class="option-label">Active</label>
+                      <input type="radio" id="docStatusInactive" name="docStatus" value="Inactive">
+                      <label for="docStatusInactive" class="option-label">Inactive</label>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" id="doctorSaveButton" class="btn" value="Add Doctor">
+              <button type="button" class="btn btn-secondary" onclick="resetDoctorForm()">Cancel</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>All doctors</h3>
+            <div class="search-bar">
+              <input type="text" id="doctorSearch" placeholder="Search by name, specialization or id..."
+                onkeyup="renderDoctors()">
+              <select id="doctorStatusFilter" onchange="renderDoctors()">
+                <option value="All">Any status</option>
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <p class="result-count" id="doctorCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Doctor</th>
+                    <th>Department</th>
+                    <th>Fee</th>
+                    <th>Days</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="doctorBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- MANAGE PATIENTS: Read, Update, Delete, Search(new patients are registered by the Receptionist) -->
+
+    <section id="patientsSection" class="page-section">
+      <h2 class="page-title">Manage Patients</h2>
+      <p class="page-subtitle">Search patients and correct their details. New patients are registered at the front desk.
+      </p>
+
+      <div id="patientMessage" class="message"></div>
+
+      <div class="card form-body" id="patientFormCard">
+        <h3>Edit Patient</h3>
+        <form id="patientForm" onsubmit="return savePatient()">
+          <fieldset>
+            <legend id="patientFormLegend">Patient details</legend>
+            <table class="form-table">
+              <tr>
+                <td><label for="patName">Full name:</label></td>
+                <td><input type="text" id="patName"><span class="error" id="patNameError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="patPhone">Phone:</label></td>
+                <td><input type="tel" id="patPhone"><span class="error" id="patPhoneError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="patEmail">Email:</label></td>
+                <td><input type="email" id="patEmail"><span class="error" id="patEmailError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="patAddress">Address:</label></td>
+                <td><input type="text" id="patAddress"><span class="error" id="patAddressError"></span></td>
+              </tr>
+            </table>
+          </fieldset>
+          <input type="submit" class="btn" value="Save Changes">
+          <button type="button" class="btn btn-secondary" onclick="resetPatientForm()">Cancel</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>All patients</h3>
+        <div class="search-bar">
+          <input type="text" id="patientSearch" placeholder="Search by name, phone or id..." onkeyup="renderPatients()">
+        </div>
+        <p class="result-count" id="patientCount"></p>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Phone</th>
+                <th>Gender</th>
+                <th>Blood</th>
+                <th>Address</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="patientBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!--MANAGE APPOINTMENTS: Read, Update status, Delete, Search -->
+
+    <section id="appointmentsSection" class="page-section">
+      <h2 class="page-title">Manage Appointments</h2>
+      <p class="page-subtitle">See every appointment and update its status.</p>
+
+      <div id="appointmentMessage" class="message"></div>
+
+      <div class="card">
+        <div class="search-bar">
+          <input type="text" id="appointmentSearch" placeholder="Search by patient, doctor, reason or id..."
+            onkeyup="renderAppointments()">
+          <select id="appointmentStatusFilter" onchange="renderAppointments()">
+            <option value="All">Any status</option>
+            <option value="Pending">Pending</option>
+            <option value="Checked-in">Checked-in</option>
+            <option value="In Consultation">In Consultation</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <p class="result-count" id="appointmentCount"></p>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ACTIVITY HISTORY (read only, scrolling board) -->
+    <section id="activitySection" class="page-section">
+      <h2 class="page-title">Activity History</h2>
+      <p class="page-subtitle">What happened in the system. Each type has its own colour.</p>
+      <div class="card">
+        <div class="search-bar">
+          <input type="text" id="logSearch" placeholder="Search the history..." onkeyup="renderLog()">
+          <select id="logTypeFilter" onchange="renderLog()">
+            <option value="All">Any type</option>
+            <option value="Doctor">Doctor</option>
+            <option value="Patient">Patient</option>
+            <option value="Appointment">Appointment</option>
+            <option value="Prescription">Prescription</option>
+            <option value="Medicine">Medicine</option>
+            <option value="Account">Account</option>
+          </select>
+        </div>
+        <p class="result-count" id="logCount"></p>
+        <div class="notice-board" id="logBoard"></div>
+        <br>
+        <button type="button" class="btn btn-small btn-danger" onclick="clearLog()">Clear history</button>
+      </div>
+    </section>
+
+
+    <!-- COMMON FEATURE: NOTIFICATIONS (same on every dashboard) Filled by renderNotifications() in common.js -->
+
+    <section id="notificationsSection" class="page-section">
+      <h2 class="page-title">Notifications</h2>
+      <p class="page-subtitle">Appointment updates, queue changes and other events. <span id="notificationCount"
+          class="hint"></span></p>
+      <div class="card">
+        <button type="button" class="btn btn-small btn-secondary" onclick="markAllRead()">Mark all as read</button>
+        <div class="notice-board" id="notificationList"></div>
+      </div>
+    </section>
+
+
+    <!--COMMON FEATURE: MY PROFILE (same on every dashboard) View the profile and edit name, email and phone.-->
+
+
+    <section id="profileSection" class="page-section">
+      <h2 class="page-title">My Profile</h2>
+      <p class="page-subtitle">Your account details. Name, email and phone can be edited.</p>
+      <div id="profileMessage" class="message"></div>
+      <div class="card">
+        <form id="profileForm" onsubmit="return saveProfile()">
+          <fieldset>
+            <legend>Account details</legend>
+            <table class="form-table">
+              <tr>
+                <td><label for="profileName">Full name:</label></td>
+                <td><input type="text" id="profileName"><span class="error" id="profileNameError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profileEmail">Email:</label></td>
+                <td><input type="email" id="profileEmail"><span class="error" id="profileEmailError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profilePhone">Phone:</label></td>
+                <td><input type="tel" id="profilePhone"><span class="error" id="profilePhoneError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profileUsername">Username:</label></td>
+                <td><input type="text" id="profileUsername" readonly></td>
+              </tr>
+              <tr>
+                <td><label for="profileRole">Role:</label></td>
+                <td><input type="text" id="profileRole" readonly></td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="hint" id="profileDetails"></p><br>
+          <input type="submit" class="btn" value="Save Profile">
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 Evercare Medical Center &middot; Web Technologies course project
+  </footer>
+
+  <script src="js/shohanData.js"></script>
+  <script src="js/alifData.js"></script>
+  <script src="js/saadData.js"></script>
+  <script src="js/najirData.js"></script>
+  <script src="js/shohanCommon.js"></script>
+  <script src="js/alifCommon.js"></script>
+  <script src="js/saadCommon.js"></script>
+  <script src="js/najirCommon.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+
+</html>
