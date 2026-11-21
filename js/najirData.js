@@ -246,5 +246,22 @@ let queue = [
     date: sampleDate(0),
     status: 'Completed',
   },
-
+  {
+    id: 'Q-006',
+    token: 2,
+    appointmentId: 'A-2007',
+    patientId: 'P-1003',
+    doctorId: 'D-102',
+    date: sampleDate(0),
+    status: 'Waiting',
+  },
+  {
+    id: 'Q-007',
+    token: 1,
+    appointmentId: 'A-2011',
+    patientId: 'P-1006',
+    doctorId: 'D-105',
+    date: sampleDate(0),
+    status: 'Completed',
+  },
 ];
