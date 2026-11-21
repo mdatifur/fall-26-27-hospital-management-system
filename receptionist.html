@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Receptionist dashboard of Evercare Medical Center">
+    <title>Receptionist Dashboard | Evercare Medical Center</title>
+    <link rel="stylesheet" href="css/shohanStyle.css">
+    <link rel="stylesheet" href="css/alifStyle.css">
+    <link rel="stylesheet" href="css/saadStyle.css">
+    <link rel="stylesheet" href="css/najirStyle.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">Ever<span>care</span> Medical Center</a>
+        <div class="user-info">
+            <span class="badge receptionist">Receptionist</span>
+            <span>Welcome, <span id="welcomeName"></span></span>
+            <a href="index.html" class="btn btn-small btn-light">Logout</a>
+        </div>
+    </header>
+
+    <nav class="topnav">
+        <button type="button" id="nav-checkinSection" onclick="showSection('checkinSection')">Check-in and
+            Tokens</button>
+        <button type="button" id="nav-bookingSection" onclick="showSection('bookingSection')">Appointments and
+            Slots</button>
+        <button type="button" id="nav-registrationSection" onclick="showSection('registrationSection')">Register
+            Patient</button>
+        <button type="button" id="nav-notificationsSection"
+            onclick="showSection('notificationsSection')">Notifications</button>
+        <button type="button" id="nav-profileSection" onclick="showSection('profileSection')">My Profile</button>
+        <button type="button" id="nav-emergencySection" onclick="showSection('emergencySection')">Emergency
+            Rescheduling</button>
+    </nav>
+
+    <main class="container">
+
+        <!-- UNIQUE FEATURE : PATIENT CHECK-IN AND TOKEN GENERATORThe tokens are saved in the shared "queue" array, which theDoctor and Patient pages read too. -->
+
+        <section id="checkinSection" class="page-section">
+            <h2 class="page-title">Patient Check-in and Token Generator</h2>
+            <p class="page-subtitle">Find the appointment, verify it and give the patient a queue token.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="dashToday">0</div>
+                    <div class="stat-label">Today's appointments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="dashNotArrived">0</div>
+                    <div class="stat-label">Not checked in yet</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="dashWaiting">0</div>
+                    <div class="stat-label">Waiting patients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="dashCompleted">0</div>
+                    <div class="stat-label">Completed today</div>
+                </div>
+            </div>
+
+            <div id="checkinMessage" class="message"></div>
+
+            <div class="row">
+                <div class="col-wide">
+                    <div class="card">
+                        <h3>Find the appointment</h3>
+                        <div class="search-bar">
+                            <input type="text" id="checkinSearch"
+                                placeholder="Patient name, phone or appointment id (empty = today's list)..."
+                                onkeyup="renderCheckin()">
+                        </div>
+                        <p class="result-count" id="checkinCount"></p>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Patient</th>
+                                        <th>Doctor</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Token</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="checkinBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card">
+                        <h3>Token slip</h3>
+                        <div id="tokenSlip">
+                            <p class="empty-row">Check in a patient to see the token here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Today's queue (all doctors)</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Token</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Queue status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="queueBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- UNIQUE FEATURE : APPOINTMENT AND SLOT MANAGER-->
+
+        <section id="bookingSection" class="page-section">
+            <h2 class="page-title">Appointment and Slot Manager</h2>
+            <p class="page-subtitle">Book, change or cancel appointments. Booked slots cannot be chosen twice.</p>
+
+            <div id="bookingMessage" class="message"></div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <h3 id="bookingFormTitle">Book an Appointment</h3>
+                        <form id="bookingForm" onsubmit="return saveAppointment()">
+                            <fieldset>
+                                <legend>Appointment details</legend>
+                                <table class="form-table">
+                                    <tr>
+                                        <td><label for="bookPatient">Patient:</label></td>
+                                        <td><select id="bookPatient">
+                                                <option value="">-- Select patient --</option>
+                                            </select><span class="error" id="bookPatientError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="bookDepartment">Department:</label></td>
+                                        <td><select id="bookDepartment" onchange="fillDoctorOptions()">
+                                                <option value="">-- Select department --</option>
+                                            </select><span class="error" id="bookDepartmentError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="bookDoctor">Doctor:</label></td>
+                                        <td><select id="bookDoctor" onchange="refreshBookingSlots()">
+                                                <option value="">-- Select doctor --</option>
+                                            </select><span class="error" id="bookDoctorError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="bookDate">Date:</label></td>
+                                        <td><input type="date" id="bookDate" onchange="refreshBookingSlots()"><span
+                                                class="error" id="bookDateError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="bookTime">Time:</label></td>
+                                        <td><select id="bookTime">
+                                                <option value="">-- Select time --</option>
+                                            </select><span class="error" id="bookTimeError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="bookReason">Reason:</label></td>
+                                        <td><input type="text" id="bookReason" placeholder="Reason for the visit"><span
+                                                class="error" id="bookReasonError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="bookStatus">Status:</label></td>
+                                        <td>
+                                            <select id="bookStatus">
+                                                <option value="Pending">Pending</option>
+                                                <option value="Completed">Completed</option>
+                                                <option value="Cancelled">Cancelled</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <input type="submit" id="bookingSaveButton" class="btn" value="Book Appointment">
+                            <button type="button" class="btn btn-secondary" onclick="resetBookingForm()">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-wide">
+                    <div class="card">
+                        <h3>Appointments</h3>
+                        <div class="search-bar">
+                            <input type="text" id="bookingSearch" placeholder="Search by patient, doctor or id..."
+                                onkeyup="renderAppointments()">
+                            <select id="bookingStatusFilter" onchange="renderAppointments()">
+                                <option value="All">Any status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Checked-in">Checked-in</option>
+                                <option value="In Consultation">In Consultation</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <p class="result-count" id="bookingCount"></p>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Patient</th>
+                                        <th>Doctor</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- UNIQUE FEATURE : QUICK PATIENT REGISTRATION-->
+
+        <section id="registrationSection" class="page-section">
+            <h2 class="page-title">Quick Patient Registration</h2>
+            <p class="page-subtitle">Register a walk-in patient. The Patient ID is made automatically.</p>
+
+            <div id="registrationMessage" class="message"></div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <h3>New patient</h3>
+                        <form id="registrationForm" onsubmit="return savePatient()">
+                            <fieldset>
+                                <legend>Patient details</legend>
+                                <table class="form-table">
+                                    <tr>
+                                        <td><label for="regId">Patient ID:</label></td>
+                                        <td><input type="text" id="regId" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="regName">Full name: *</label></td>
+                                        <td><input type="text" id="regName" placeholder="Full name"><span class="error"
+                                                id="regNameError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="regDob">Date of birth: *</label></td>
+                                        <td><input type="date" id="regDob"><span class="error" id="regDobError"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gender: *</td>
+                                        <td>
+                                            <input type="radio" id="regMale" name="regGender" value="Male"><label
+                                                for="regMale" class="option-label">Male</label>
+                                            <input type="radio" id="regFemale" name="regGender" value="Female"><label
+                                                for="regFemale" class="option-label">Female</label>
+                                            <input type="radio" id="regOther" name="regGender" value="Other"><label
+                                                for="regOther" class="option-label">Other</label>
+                                            <span class="error" id="regGenderError"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="regPhone">Phone: *</label></td>
+                                        <td><input type="tel" id="regPhone" placeholder="01XXXXXXXXX"><span
+                                                class="error" id="regPhoneError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="regEmail">Email: *</label></td>
+                                        <td><input type="email" id="regEmail" placeholder="name@example.com"><span
+                                                class="error" id="regEmailError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="regAddress">Address: *</label></td>
+                                        <td><textarea id="regAddress" rows="3" cols="30"></textarea><span class="error"
+                                                id="regAddressError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="regBlood">Blood group: *</label></td>
+                                        <td>
+                                            <select id="regBlood">
+                                                <option value="">-- Select --</option>
+                                                <option value="A+">A+</option>
+                                                <option value="A-">A-</option>
+                                                <option value="B+">B+</option>
+                                                <option value="B-">B-</option>
+                                                <option value="AB+">AB+</option>
+                                                <option value="AB-">AB-</option>
+                                                <option value="O+">O+</option>
+                                                <option value="O-">O-</option>
+                                            </select>
+                                            <span class="error" id="regBloodError"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="regEmergency">Emergency contact: *</label></td>
+                                        <td><input type="text" id="regEmergency" placeholder="Name - phone number"><span
+                                                class="error" id="regEmergencyError"></span></td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <input type="submit" class="btn" value="Register Patient">
+                            <button type="button" class="btn btn-secondary"
+                                onclick="resetRegistrationForm()">Clear</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-wide">
+                    <div class="card">
+                        <h3>Search patients</h3>
+                        <div class="search-bar">
+                            <input type="text" id="patientSearch" placeholder="Search by name, phone or id..."
+                                onkeyup="renderPatients()">
+                        </div>
+                        <p class="result-count" id="patientCount"></p>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Gender</th>
+                                        <th>Blood</th>
+                                        <th>Date of birth</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="patientBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- UNIQUE FEATURE 4: DYNAMIC SLOT BOOKING AND EMERGENCY RESCHEDULINGUses the shared doctors, patients and appointments arrays.Filled by the emergency functions in receptionist.js-->
+
+        <section id="emergencySection" class="page-section">
+            <h2 class="page-title">Dynamic Slot Booking and Emergency Rescheduling</h2>
+            <p class="page-subtitle">When a doctor is suddenly unavailable, find the affected appointments and move them
+                to
+                the doctor's next free slots with one click.</p>
+
+            <div id="emergencyMessage" class="message"></div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <h3>Doctor unavailability</h3>
+                        <form id="emergencyForm" onsubmit="return findAffectedAppointments()">
+                            <fieldset>
+                                <legend>Unavailable schedule</legend>
+                                <table class="form-table">
+                                    <tr>
+                                        <td><label for="emgDoctor">Doctor:</label></td>
+                                        <td><select id="emgDoctor">
+                                                <option value="">-- Select doctor --</option>
+                                            </select><span class="error" id="emgDoctorError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="emgDate">Unavailable date:</label></td>
+                                        <td><input type="date" id="emgDate"><span class="error"
+                                                id="emgDateError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="emgStart">Start time:</label></td>
+                                        <td><input type="time" id="emgStart"><span class="error"
+                                                id="emgStartError"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="emgEnd">End time:</label></td>
+                                        <td><input type="time" id="emgEnd"><span class="error" id="emgEndError"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="emgReason">Reason:</label></td>
+                                        <td>
+                                            <select id="emgReason">
+                                                <option value="">-- Select reason --</option>
+                                                <option value="Emergency OT Duty">Emergency OT Duty</option>
+                                                <option value="On-Call Emergency">On-Call Emergency</option>
+                                                <option value="Medical Emergency">Medical Emergency</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            <span class="error" id="emgReasonError"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+                            <input type="submit" class="btn" value="Find Affected Appointments">
+                            <button type="button" class="btn btn-secondary"
+                                onclick="resetEmergencyForm()">Clear</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-wide">
+                    <div class="card">
+                        <h3>Affected appointments</h3>
+                        <p class="result-count" id="emergencyCount">Submit the unavailable schedule to see the affected
+                            appointments.</p>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Patient ID</th>
+                                        <th>Patient Name</th>
+                                        <th>Original Date</th>
+                                        <th>Original Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="emergencyBody"></tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <button type="button" class="btn btn-success" id="rescheduleAllButton"
+                            onclick="rescheduleAllAppointments()" disabled>Reschedule All Appointments</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="emgTotal">0</div>
+                    <div class="stat-label">Total affected appointments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="emgDone">0</div>
+                    <div class="stat-label">Successfully rescheduled</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="emgPending">0</div>
+                    <div class="stat-label">Pending rescheduling</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Rescheduling summary</h3>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Original Appointment</th>
+                                <th>New Appointment</th>
+                                <th>Result</th>
+                                <th>Notification</th>
+                            </tr>
+                        </thead>
+                        <tbody id="emergencySummaryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!--COMMON FEATURE: NOTIFICATIONS (same on every dashboard)Filled by renderNotifications() in common.js-->
+
+        <section id="notificationsSection" class="page-section">
+            <h2 class="page-title">Notifications</h2>
+            <p class="page-subtitle">Appointment updates, queue changes and other events. <span id="notificationCount"
+                    class="hint"></span></p>
+            <div class="card">
+                <button type="button" class="btn btn-small btn-secondary" onclick="markAllRead()">Mark all as
+                    read</button>
+                <div class="notice-board" id="notificationList"></div>
+            </div>
+        </section>
+
+
+        <!-- COMMON FEATURE: MY PROFILE (same on every dashboard) View the profile and edit name, email and phone. -->
+
+        <section id="profileSection" class="page-section">
+            <h2 class="page-title">My Profile</h2>
+            <p class="page-subtitle">Your account details. Name, email and phone can be edited.</p>
+            <div id="profileMessage" class="message"></div>
+            <div class="card">
+                <form id="profileForm" onsubmit="return saveProfile()">
+                    <fieldset>
+                        <legend>Account details</legend>
+                        <table class="form-table">
+                            <tr>
+                                <td><label for="profileName">Full name:</label></td>
+                                <td><input type="text" id="profileName"><span class="error"
+                                        id="profileNameError"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="profileEmail">Email:</label></td>
+                                <td><input type="email" id="profileEmail"><span class="error"
+                                        id="profileEmailError"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="profilePhone">Phone:</label></td>
+                                <td><input type="tel" id="profilePhone"><span class="error"
+                                        id="profilePhoneError"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="profileUsername">Username:</label></td>
+                                <td><input type="text" id="profileUsername" readonly></td>
+                            </tr>
+                            <tr>
+                                <td><label for="profileRole">Role:</label></td>
+                                <td><input type="text" id="profileRole" readonly></td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                    <p class="hint" id="profileDetails"></p><br>
+                    <input type="submit" class="btn" value="Save Profile">
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        &copy; 2026 Evercare Medical Center &middot; Web Technologies course project
+    </footer>
+
+    <script src="js/shohanData.js"></script>
+    <script src="js/alifData.js"></script>
+    <script src="js/saadData.js"></script>
+    <script src="js/najirData.js"></script>
+    <script src="js/shohanCommon.js"></script>
+    <script src="js/alifCommon.js"></script>
+    <script src="js/saadCommon.js"></script>
+    <script src="js/najirCommon.js"></script>
+    <script src="js/receptionist.js"></script>
+</body>
+
+</html>
