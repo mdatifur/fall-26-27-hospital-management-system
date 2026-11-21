@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Evercare Medical Center: find doctors, book appointments and track your queue">
+  <title>Home | Evercare Medical Center</title>
+  <link rel="stylesheet" href="css/shohanStyle.css">
+  <link rel="stylesheet" href="css/alifStyle.css">
+  <link rel="stylesheet" href="css/saadStyle.css">
+  <link rel="stylesheet" href="css/najirStyle.css">
+</head>
+
+<body>
+
+  <!--  HEADER  -->
+  <header class="header">
+    <a href="index.html" class="logo">Ever<span>care</span> Medical Center</a>
+    <div class="user-info">
+      <a href="login.html" class="btn btn-small btn-light">Login</a>
+      <a href="register.html" class="btn btn-small">Register</a>
+    </div>
+  </header>
+
+  <!-- The same navigation bar on every public page -->
+  <nav class="topnav">
+    <a href="index.html" class="active">Home</a>
+    <a href="#search">Find a Doctor</a>
+    <a href="#who">Who It's For</a>
+    <a href="#how">How It Works</a>
+    <a href="#hours">Visiting Hours</a>
+    <a href="#contact">Contact Us</a>
+  </nav>
+
+  <!--  HERO with the doctor search  -->
+  <div class="hero">
+    <h1>Care that is easy to reach</h1>
+    <p>Find a doctor, book an appointment and follow your queue from one place.</p>
+
+
+    <div class="hero-search">
+      <input type="text" id="doctorSearch" placeholder="Search by doctor name or specialization..."
+        onkeyup="renderDoctorDirectory()">
+      <select id="doctorDepartment" onchange="renderDoctorDirectory()">
+        <option value="All">All departments</option>
+      </select>
+    </div>
+    <p class="hero-note">No account needed to search. <a href="#search" class="hero-link">See the results &darr;</a></p>
+  </div>
+
+  <main class="container">
+
+    <!--  WHY EVERCARE  -->
+    <div class="feature-strip">
+      <div class="feature">
+        <span class="feature-icon">1</span>
+        <h3>One login</h3>
+        <p>Patients, doctors, receptionists and admins all use the same login page.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">2</span>
+        <h3>Book online</h3>
+        <p>Choose a doctor, a day and a free time slot.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">3</span>
+        <h3>Live queue</h3>
+        <p>See your token and how many patients are ahead of you.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">4</span>
+        <h3>Health record</h3>
+        <p>Keep your prescriptions and lab reports in one place.</p>
+      </div>
+    </div>
+
+    <!--  FIND A DOCTOR  -->
+    <section id="search" class="home-section">
+      <div class="section-heading">
+        <h2>Find a Doctor</h2>
+        <p>Our active doctors. Log in as a patient to book an appointment.</p>
+      </div>
+      <div class="card">
+        <p class="result-count" id="doctorCount"></p>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Specialization</th>
+                <th>Department</th>
+                <th>Qualification</th>
+                <th>Fee (Tk)</th>
+                <th>Available days</th>
+              </tr>
+            </thead>
+            <tbody id="doctorBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!--  WHO IT IS FOR  -->
+    <section id="who" class="home-section">
+      <div class="section-heading">
+        <h2>Who It's For</h2>
+        <p>Four kinds of users, each with their own dashboard.</p>
+      </div>
+      <div class="role-grid">
+        <div class="role-card patient">
+          <h3>Patient</h3>
+          <p>Book visits and follow your care.</p>
+          <ul>
+            <li>Smart Doctor Finder</li>
+            <li>Live Queue Tracker</li>
+            <li>Personal Health Record</li>
+          </ul>
+        </div>
+        <div class="role-card doctor">
+          <h3>Doctor</h3>
+          <p>Manage patients and treatment.</p>
+          <ul>
+            <li>Smart Patient Queue</li>
+            <li>Digital Prescription Builder</li>
+            <li>Patient Medical Timeline</li>
+          </ul>
+        </div>
+        <div class="role-card receptionist">
+          <h3>Receptionist</h3>
+          <p>Run the front desk.</p>
+          <ul>
+            <li>Quick Patient Registration</li>
+            <li>Appointment and Slot Manager</li>
+            <li>Check-in and Token Generator</li>
+          </ul>
+        </div>
+        <div class="role-card admin">
+          <h3>Admin</h3>
+          <p>Oversee the hospital.</p>
+          <ul>
+            <li>Hospital Statistics Report</li>
+            <li>Doctor Workload Monitor</li>
+            <li>Medicine Stock and Expiry Monitor</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!--  HOW IT WORKS  -->
+    <section id="how" class="home-section">
+      <div class="section-heading">
+        <h2>How It Works</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><span class="step-number">1</span>
+          <h3>Register</h3>
+          <p>Create a patient account, or ask the front desk to register you.</p>
+        </div>
+        <div class="step"><span class="step-number">2</span>
+          <h3>Book</h3>
+          <p>Pick a doctor and a free time slot.</p>
+        </div>
+        <div class="step"><span class="step-number">3</span>
+          <h3>Check in</h3>
+          <p>Arrive and get a queue token at reception.</p>
+        </div>
+        <div class="step"><span class="step-number">4</span>
+          <h3>See the doctor</h3>
+          <p>Follow your turn live and find your prescription afterwards.</p>
+        </div>
+      </div>
+    </section>
+
+    <!--  VISITING HOURS  -->
+    <section id="hours" class="home-section">
+      <div class="card">
+        <h3>Visiting Hours</h3>
+        <table class="contact-table">
+          <tr>
+            <td>Outpatient (OPD):</td>
+            <td>Sunday to Thursday, 9:00 AM - 5:00 PM</td>
+          </tr>
+          <tr>
+            <td>Saturday:</td>
+            <td>9:00 AM - 1:00 PM</td>
+          </tr>
+          <tr>
+            <td>Emergency:</td>
+            <td>Open 24 hours, every day</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!--  CONTACT  -->
+    <section id="contact" class="home-section">
+      <div class="card">
+        <h3>Contact Us</h3>
+        <table class="contact-table">
+          <tr>
+            <td>Address:</td>
+            <td>12 Sample Road, Dhaka (fictional address)</td>
+          </tr>
+          <tr>
+            <td>Phone:</td>
+            <td>01700-000000 (fictional)</td>
+          </tr>
+          <tr>
+            <td>Email:</td>
+            <td>info@evercare.demo</td>
+          </tr>
+        </table>
+      </div>
+      <div class="cta-band">
+        <h2>Ready to get started?</h2>
+        <p>Create a patient account or log in to your dashboard.</p>
+        <a href="register.html" class="btn btn-light">Register</a>
+        <a href="login.html" class="btn btn-secondary">Login</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+    </div>
+    &copy; 2026 Evercare Medical Center &middot; Web Technologies course project &middot; Fictional data only
+  </footer>
+
+  <script src="js/shohanData.js"></script>
+  <script src="js/alifData.js"></script>
+  <script src="js/saadData.js"></script>
+  <script src="js/najirData.js"></script>
+  <script src="js/shohanCommon.js"></script>
+  <script src="js/alifCommon.js"></script>
+  <script src="js/saadCommon.js"></script>
+  <script src="js/najirCommon.js"></script>
+  <script src="js/home.js"></script>
+</body>
+
+</html>
