@@ -1,3 +1,6 @@
+/*
+   4. SMALL VALIDATION HELPERS Each returns true or false, so they can be used inside if ( ... ) */
+
 // true when the user typed nothing (or only spaces)
 function isEmpty(value) {
   return value.trim() === '';
@@ -34,7 +37,7 @@ function isDigitsOnly(text) {
   return true;
 }
 
-// A phone number here is 11 digits and starts with 01 (01711000001)
+// A phone number here is 11 digits and starts with 01 (e.g. 01711000001)
 function isValidPhone(phone) {
   return (
     isDigitsOnly(phone) && phone.length === 11 && phone.slice(0, 2) === '01'
@@ -64,7 +67,7 @@ function getCheckedValues(groupName) {
   return selected;
 }
 
-/*profileName, profileEmail, profilePhone are editable;profileUsername and profileRole are read only. */
+/* 11. PROFILE (same form ids on every dashboard)profileName, profileEmail, profilePhone are editable;profileUsername and profileRole are read only. */
 
 function renderProfile() {
   document.getElementById('profileName').value = currentUser.name;

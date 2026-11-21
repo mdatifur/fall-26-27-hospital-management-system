@@ -1,4 +1,3 @@
-
 const patientFields = ['bloodGroup', 'address', 'emergencyContact'];
 const doctorFields = [
   'specialization',
@@ -360,6 +359,7 @@ function resetRegisterForm() {
   clearErrors(doctorFields);
   clearErrors(receptionistFields);
 }
+
 // Fill the department list of the doctor fieldset from the departments array
 for (const department of departments) {
   addOption(

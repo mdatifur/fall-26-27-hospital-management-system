@@ -1,5 +1,3 @@
-// OWNER: Saad  |  Patient module  |  only Saad edits this file
-
 // The ids of the sections on this page (used by showSection in common.js)
 const sections = [
   'queueSection',
