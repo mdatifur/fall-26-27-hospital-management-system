@@ -1,4 +1,9 @@
+/* ============================================================== */
+/* alifStyle.css  |  OWNER: Alif (Doctor & Login) */
+/* Only Alif edits this file. Pages load it in order: shohan, alif, saad, najir. */
+/* ============================================================== */
 
+/* The login and register boxes: centred, never wider than the screen */
 .auth-box {
   max-width: 480px;
   margin: 40px auto;
@@ -21,7 +26,7 @@
   padding: 2px 8px 2px 0;
 }
 
-
+/* Doctor: queue panel with the token that is being served */
 .queue-panel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -57,7 +62,7 @@
   margin: 2px 4px 2px 0;
 }
 
-
+/* Doctor timeline: a vertical list with a coloured left border */
 .timeline {
   border-left: 3px solid #d5e6e2;
   margin: 10px 0 10px 10px;
@@ -89,7 +94,7 @@
   color: #6b7c84;
 }
 
-
+/* Prescription preview paper */
 .prescription-paper {
   background-color: #ffffff;
   border: 1px solid #d5e6e2;

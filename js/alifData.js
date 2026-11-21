@@ -1,4 +1,7 @@
-
+// ==============================================================
+// alifData.js  |  OWNER: Alif (Doctor & Login)
+// Only Alif edits this file. Pages load it in order: shohan, alif, saad, najir.
+// ==============================================================
 
 let users = [
   {
@@ -83,7 +86,7 @@ let users = [
   },
 ];
 
-
+//  Doctors
 
 let doctors = [
   {
@@ -160,7 +163,7 @@ let doctors = [
   },
 ];
 
-
+//  Prescriptions written by doctors (one medicine per prescription)
 let prescriptions = [
   {
     id: 'RX-001',
@@ -220,7 +223,7 @@ let prescriptions = [
   },
 ];
 
-
+//  Medical records: diagnoses, lab reports and follow-up visits
 
 let medicalRecords = [
   {

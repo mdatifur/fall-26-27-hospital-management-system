@@ -9,9 +9,13 @@ const sections = [
   'profileSection',
 ];
 
+// The doctor who is logged in (null = wrong role, the page shows "Access denied")
 const currentUser = getLoggedInUser('Doctor');
 const currentDoctorId = currentUser === null ? '' : currentUser.doctorId;
 
+/* HELPERS FOR THIS PAGE */
+
+// Returns an array with the queue tokens of this doctor for today
 function getMyQueueToday() {
   let today = todayString();
   let mine = [];
@@ -23,7 +27,7 @@ function getMyQueueToday() {
   return mine;
 }
 
-
+// Returns an array with the patients who have a (not cancelled) appointment with this doctor
 function getMyPatients() {
   let ids = [];
   let mine = [];
@@ -44,7 +48,7 @@ function getMyPatients() {
   return mine;
 }
 
-
+// Puts "Id - Name" options for my patients into a <select>
 function fillPatientSelect(selectId) {
   let select = document.getElementById(selectId);
   let oldValue = select.value;
@@ -56,6 +60,9 @@ function fillPatientSelect(selectId) {
   select.value = oldValue;
 }
 
+/* UNIQUE FEATURE 1: SMART PATIENT QUEUE*/
+
+// Returns the token that is being served now, or null
 function findServing(myQueue) {
   for (const entry of myQueue) {
     if (entry.status === 'Serving') {
@@ -65,7 +72,7 @@ function findServing(myQueue) {
   return null;
 }
 
-
+// Returns the waiting token with the smallest number, or null
 function findNextWaiting(myQueue) {
   let next = null;
   for (const entry of myQueue) {
@@ -91,7 +98,7 @@ function renderQueue() {
     }
   }
 
-
+  //The three boxes at the top
   if (serving !== null) {
     document.getElementById('servingToken').innerHTML = serving.token;
     document.getElementById('servingName').innerHTML = patientName(
@@ -110,7 +117,7 @@ function renderQueue() {
   }
   document.getElementById('waitingCount').innerHTML = waiting;
 
-  
+  // The queue table
   let rows = '';
   for (const entry of myQueue) {
     let appointment = findById(appointments, entry.appointmentId);
@@ -129,7 +136,7 @@ function renderQueue() {
         color = 'orange';
     }
 
-    
+    // A waiting or skipped patient can be called directly
     let action = '&mdash;';
     if (entry.status === 'Waiting' || entry.status === 'Skipped') {
       action =
@@ -165,6 +172,7 @@ function renderQueue() {
   }
   document.getElementById('queueBody').innerHTML = rows;
 
+  // Dashboard statistics (counted from the arrays)
   let todayCount = 0;
   let completedCount = 0;
   for (const appointment of appointments) {
@@ -189,7 +197,7 @@ function renderQueue() {
     doctor.name + ' &middot; ' + doctor.room + ' &middot; ' + today;
 }
 
-
+// Starts serving one token: the patient is now in consultation
 function startServing(entry) {
   let appointment = findById(appointments, entry.appointmentId);
   setAppointmentStatus(appointment, 'In Consultation');
@@ -212,6 +220,7 @@ function startServing(entry) {
   );
 }
 
+// Button "Call Next Patient": finish the current patient (if any), then call the next one
 function callNextPatient() {
   let myQueue = getMyQueueToday();
   let current = findServing(myQueue);
@@ -245,7 +254,7 @@ function callNextPatient() {
   );
 }
 
-
+// Button "Mark Current as Completed"
 function completeCurrent() {
   let current = findServing(getMyQueueToday());
   if (current === null) {
@@ -277,6 +286,7 @@ function completeCurrent() {
   );
 }
 
+// Button "Skip Current": the patient goes back to waiting later (status Skipped)
 function skipCurrent() {
   let current = findServing(getMyQueueToday());
   if (current === null) {
@@ -303,7 +313,7 @@ function skipCurrent() {
   );
 }
 
-
+// The "Call" button of one row
 function callToken(queueIndex) {
   if (findServing(getMyQueueToday()) !== null) {
     showMessage(
@@ -328,7 +338,7 @@ function callToken(queueIndex) {
   );
 }
 
-
+/* MY APPOINTMENTS: READ, SEARCH, UPDATE STATUS */
 function renderAppointments() {
   let keyword = document.getElementById('appointmentSearch').value;
   let statusFilter = document.getElementById('appointmentStatusFilter').value;
@@ -434,6 +444,9 @@ function changeAppointment(index, newStatus) {
   );
 }
 
+//  Schedule a follow-up visit (CREATE an appointment)
+
+// When the date changes, show which time slots are still free
 function refreshFollowSlots() {
   fillTimeSlots(
     'followTime',
@@ -504,7 +517,7 @@ function saveFollowUp() {
   };
   appointments.push(newAppointment);
 
-  
+  // A follow-up record, so it also appears in the medical timeline
   medicalRecords.push({
     id: nextId('MR', medicalRecords),
     patientId: patientId,
@@ -555,7 +568,9 @@ function saveFollowUp() {
   return false;
 }
 
+/*UNIQUE FEATURE 2: DIGITAL PRESCRIPTION BUILDER */
 
+// The text of one prescription as a "paper" box
 function prescriptionHtml(rx) {
   let followUp = rx.followUp === '' ? 'None' : rx.followUp;
   return (
@@ -666,7 +681,7 @@ function previewPrescription(index) {
   );
 }
 
-
+// CREATE: runs when the prescription form is submitted
 function savePrescription() {
   let patientId = document.getElementById('rxPatient').value;
   let diagnosis = document.getElementById('rxDiagnosis').value.trim();
@@ -678,7 +693,7 @@ function savePrescription() {
   let tests = document.getElementById('rxTests').value.trim();
   let followUp = document.getElementById('rxFollowUp').value;
 
-
+  // ----- Validation -----
   let isValid = true;
   clearErrors([
     'rxPatient',
@@ -727,7 +742,7 @@ function savePrescription() {
     return false;
   }
 
-
+  // Save: build an object and push() it
   if (tests === '') {
     tests = 'None';
   }
@@ -801,7 +816,7 @@ function deletePrescription(index) {
   }
 }
 
-
+/* UNIQUE FEATURE 3: PATIENT MEDICAL TIMELINE */
 function renderTimeline() {
   let patientId = document.getElementById('timelinePatient').value;
   let box = document.getElementById('timelineList');
@@ -816,7 +831,7 @@ function renderTimeline() {
 
   let items = [];
 
-
+  // 1. Previous (completed) appointments
   for (const appointment of appointments) {
     if (
       appointment.patientId === patientId &&
@@ -833,7 +848,7 @@ function renderTimeline() {
     }
   }
 
-
+  // 2. Diagnoses, lab reports and follow-up visits
   for (const record of medicalRecords) {
     if (record.patientId === patientId) {
       let color = 'teal';
@@ -852,7 +867,7 @@ function renderTimeline() {
     }
   }
 
-
+  // 3. Prescriptions
   for (const rx of prescriptions) {
     if (rx.patientId === patientId) {
       items.push({
@@ -908,7 +923,7 @@ function renderTimeline() {
     items.length + ' event(s) for ' + patientName(patientId);
 }
 
-
+/* START: runs once when the page has loaded (scripts are at the end of <body>) */
 
 if (currentUser === null) {
   showAccessDenied('Doctor');
