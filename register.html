@@ -239,9 +239,34 @@
                 </table>
               </fieldset>
             </div>
-            
-<!-- commit5 -->
 
+<!--  STEP 4: LOGIN DETAILS  -->
+            <fieldset>
+              <legend>Step 4 &middot; Login details</legend>
+              <table class="form-table">
+                <tr>
+                  <td><label for="newUsername">Username: *</label></td>
+                  <td>
+                    <input type="text" id="newUsername" placeholder="At least 4 characters">
+                    <span class="error" id="newUsernameError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="newPassword">Password: *</label></td>
+                  <td>
+                    <input type="password" id="newPassword" placeholder="At least 8 characters">
+                    <span class="error" id="newPasswordError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="confirmPassword">Confirm password: *</label></td>
+                  <td>
+                    <input type="password" id="confirmPassword" placeholder="Type the password again">
+                    <span class="error" id="confirmPasswordError"></span>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
             <input type="submit" id="registerButton" class="btn btn-block" value="Create Account">
             <button type="button" class="btn btn-secondary btn-block" onclick="resetRegisterForm()">Clear form</button>
           </div>
