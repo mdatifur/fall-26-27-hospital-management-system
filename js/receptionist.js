@@ -1135,3 +1135,24 @@ function rescheduleAllAppointments() {
       queue = removeQueueFor(appointment.id);
     }
 
+
+    /* START: runs once when the page has loaded (scripts are at the end of <body>) */
+    if (currentUser === null) {
+      showAccessDenied('Receptionist');
+    } else {
+      document.getElementById('welcomeName').innerHTML = currentUser.name;
+
+      fillBookingLists();
+      fillEmergencyDoctors();
+      showNextPatientId();
+
+      renderCheckin();
+      renderQueueTable();
+      renderDashboard();
+      renderAppointments();
+      renderPatients();
+      renderNotifications();
+      renderProfile();
+      renderEmergency();
+      showSection('checkinSection');
+    }
