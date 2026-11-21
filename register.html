@@ -118,8 +118,128 @@
               </table>
             </fieldset>
 
- <!-- commit4 -->
+           <!--  STEP 3: FIELDS OF ONE TYPE Only one of these three fieldsets is visible (style.display). -->
 
+            <div id="patientFields" class="type-fields">
+              <fieldset>
+                <legend>Step 3 &middot; Patient details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="bloodGroup">Blood group: *</label></td>
+                    <td>
+                      <select id="bloodGroup">
+                        <option value="">-- Select --</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                      </select>
+                      <span class="error" id="bloodGroupError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="address">Address: *</label></td>
+                    <td>
+                      <textarea id="address" rows="3" cols="30" placeholder="House, road, area, city"></textarea>
+                      <span class="error" id="addressError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="emergencyContact">Emergency contact: *</label></td>
+                    <td>
+                      <input type="text" id="emergencyContact" placeholder="Name - phone number">
+                      <span class="error" id="emergencyContactError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+            </div>
+
+            <div id="doctorFields" class="type-fields">
+              <fieldset>
+                <legend>Step 3 &middot; Doctor details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="specialization">Specialization: *</label></td>
+                    <td>
+                      <input type="text" id="specialization" placeholder="e.g. Cardiologist">
+                      <span class="error" id="specializationError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="qualification">Qualification: *</label></td>
+                    <td>
+                      <input type="text" id="qualification" placeholder="e.g. MBBS, FCPS">
+                      <span class="error" id="qualificationError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="doctorDepartment">Department: *</label></td>
+                    <td>
+                      <select id="doctorDepartment">
+                        <option value="">-- Select --</option>
+                      </select>
+                      <span class="error" id="doctorDepartmentError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="fee">Consultation fee (Tk): *</label></td>
+                    <td>
+                      <input type="number" id="fee" min="100" max="10000" placeholder="e.g. 800">
+                      <span class="error" id="feeError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Available days: *</td>
+                    <td>
+                      <input type="checkbox" id="daySun" name="day" value="Sun"><label for="daySun"
+                        class="option-label">Sun</label>
+                      <input type="checkbox" id="dayMon" name="day" value="Mon"><label for="dayMon"
+                        class="option-label">Mon</label>
+                      <input type="checkbox" id="dayTue" name="day" value="Tue"><label for="dayTue"
+                        class="option-label">Tue</label>
+                      <input type="checkbox" id="dayWed" name="day" value="Wed"><label for="dayWed"
+                        class="option-label">Wed</label>
+                      <input type="checkbox" id="dayThu" name="day" value="Thu"><label for="dayThu"
+                        class="option-label">Thu</label>
+                      <input type="checkbox" id="daySat" name="day" value="Sat"><label for="daySat"
+                        class="option-label">Sat</label>
+                      <span class="error" id="dayError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+            </div>
+
+            <div id="receptionistFields" class="type-fields">
+              <fieldset>
+                <legend>Step 3 &middot; Receptionist details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="employeeId">Employee ID: *</label></td>
+                    <td>
+                      <input type="text" id="employeeId" placeholder="EMP-1234">
+                      <span class="error" id="employeeIdError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Preferred shift: *</td>
+                    <td>
+                      <input type="radio" id="shiftMorning" name="shift" value="Morning">
+                      <label for="shiftMorning" class="option-label">Morning</label>
+                      <input type="radio" id="shiftEvening" name="shift" value="Evening">
+                      <label for="shiftEvening" class="option-label">Evening</label>
+                      <span class="error" id="shiftError"></span>
+                    </td>
+                  </tr>
+                </table>
+              </fieldset>
+            </div>
+            
 <!-- commit5 -->
 
             <input type="submit" id="registerButton" class="btn btn-block" value="Create Account">
