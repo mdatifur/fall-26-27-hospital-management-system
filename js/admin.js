@@ -435,7 +435,8 @@ function medicineNameUsedByOther(name) {
 function editMedicine(index) {
   let medicine = medicines[index];
   editMedicineIndex = index;
-
+  document.getElementById('medName').value = medicine.name;
+  document.getElementById('medCategory').value = medicine.category;
   document.getElementById('medQuantity').value = medicine.quantity;
   document.getElementById('medMin').value = medicine.minStock;
   document.getElementById('medExpiry').value = medicine.expiry;
