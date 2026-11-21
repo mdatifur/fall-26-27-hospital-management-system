@@ -182,8 +182,17 @@
 <!-- commit3 -->
 
 
-<!-- commit2 -->
+ <!-- COMMON FEATURE: NOTIFICATIONS (same on every dashboard)Filled by renderNotifications() in common.js -->
 
+    <section id="notificationsSection" class="page-section">
+      <h2 class="page-title">Notifications</h2>
+      <p class="page-subtitle">Appointment updates, queue changes and other events. <span id="notificationCount"
+          class="hint"></span></p>
+      <div class="card">
+        <button type="button" class="btn btn-small btn-secondary" onclick="markAllRead()">Mark all as read</button>
+        <div class="notice-board" id="notificationList"></div>
+      </div>
+    </section>
 
     <!-- COMMON FEATURE: MY PROFILE. View the profile and edit name, email and phone.-->
 
