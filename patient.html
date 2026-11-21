@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Patient dashboard of Evercare Medical Center">
+  <title>Patient Dashboard | Evercare Medical Center</title>
+  <link rel="stylesheet" href="css/shohanStyle.css">
+  <link rel="stylesheet" href="css/alifStyle.css">
+  <link rel="stylesheet" href="css/saadStyle.css">
+  <link rel="stylesheet" href="css/najirStyle.css">
+</head>
+
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">Ever<span>care</span> Medical Center</a>
+    <div class="user-info">
+      <span class="badge patient">Patient</span>
+      <span>Welcome, <span id="welcomeName"></span></span>
+      <a href="index.html" class="btn btn-small btn-light">Logout</a>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <button type="button" id="nav-queueSection" onclick="showSection('queueSection'); renderQueueTracker()">Live Queue
+      Tracker</button>
+    <button type="button" id="nav-doctorsSection" onclick="showSection('doctorsSection')">Find a Doctor</button>
+    <button type="button" id="nav-bookingSection" onclick="showSection('bookingSection')">My Appointments</button>
+    <button type="button" id="nav-recordSection" onclick="showSection('recordSection'); renderHealthRecord()">Health
+      Record</button>
+    <button type="button" id="nav-notificationsSection"
+      onclick="showSection('notificationsSection')">Notifications</button>
+    <button type="button" id="nav-profileSection" onclick="showSection('profileSection')">My Profile</button>
+  </nav>
+
+  <main class="container">
+
+    <!--UNIQUE FEATURE 2: LIVE QUEUE TRACKER Reads. Only MY appointments are shown. -->
+
+    <section id="queueSection" class="page-section">
+      <h2 class="page-title">Live Queue Tracker</h2>
+      <p class="page-subtitle">Where you are in today's queue. The waiting time is only an estimate.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="dashDoctors">0</div>
+          <div class="stat-label">Available doctors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="dashUpcoming">0</div>
+          <div class="stat-label">My upcoming appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="dashPrescriptions">0</div>
+          <div class="stat-label">My prescriptions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="dashLabs">0</div>
+          <div class="stat-label">My lab reports</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>My appointment today</h3>
+        <button type="button" class="btn btn-small btn-secondary" onclick="renderQueueTracker()">Refresh</button>
+        <div id="trackerList"></div>
+      </div>
+    </section>
+
+
+<!-- commit 1 -->
+
+
+    <!-- MY APPOINTMENTS: Create (book), Read, Search, Cancel -->
+
+    <section id="bookingSection" class="page-section">
+      <h2 class="page-title">My Appointments</h2>
+      <p class="page-subtitle">Book a visit and follow its status.</p>
+
+      <div id="bookingMessage" class="message"></div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h3>Book an Appointment</h3>
+            <form id="bookingForm" onsubmit="return saveBooking()">
+              <fieldset>
+                <legend>Appointment details</legend>
+                <table class="form-table">
+                  <tr>
+                    <td><label for="bookDoctor">Doctor:</label></td>
+                    <td>
+                      <select id="bookDoctor" onchange="refreshBookingSlots()">
+                        <option value="">-- Select doctor --</option>
+                      </select>
+                      <span class="hint" id="bookDoctorInfo"></span>
+                      <span class="error" id="bookDoctorError"></span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookDate">Date:</label></td>
+                    <td><input type="date" id="bookDate" onchange="refreshBookingSlots()"><span class="error"
+                        id="bookDateError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookTime">Time:</label></td>
+                    <td><select id="bookTime">
+                        <option value="">-- Select time --</option>
+                      </select><span class="error" id="bookTimeError"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label for="bookReason">Reason:</label></td>
+                    <td><input type="text" id="bookReason" placeholder="Why do you want to visit?"><span class="error"
+                        id="bookReasonError"></span></td>
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" class="btn" value="Book Appointment">
+              <button type="button" class="btn btn-secondary" onclick="resetBookingForm()">Clear</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-wide">
+          <div class="card">
+            <h3>My appointments</h3>
+            <div class="search-bar">
+              <input type="text" id="bookingSearch" placeholder="Search by doctor, reason or id..."
+                onkeyup="renderMyAppointments()">
+              <select id="bookingStatusFilter" onchange="renderMyAppointments()">
+                <option value="All">Any status</option>
+                <option value="Pending">Pending</option>
+                <option value="Checked-in">Checked-in</option>
+                <option value="In Consultation">In Consultation</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <p class="result-count" id="bookingCount"></p>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="bookingBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<!-- commit3 -->
+
+
+<!-- commit2 -->
+
+
+    <!-- COMMON FEATURE: MY PROFILE. View the profile and edit name, email and phone.-->
+
+    <section id="profileSection" class="page-section">
+      <h2 class="page-title">My Profile</h2>
+      <p class="page-subtitle">Your account details. Name, email and phone can be edited.</p>
+      <div id="profileMessage" class="message"></div>
+      <div class="card">
+        <form id="profileForm" onsubmit="return saveProfile()">
+          <fieldset>
+            <legend>Account details</legend>
+            <table class="form-table">
+              <tr>
+                <td><label for="profileName">Full name:</label></td>
+                <td><input type="text" id="profileName"><span class="error" id="profileNameError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profileEmail">Email:</label></td>
+                <td><input type="email" id="profileEmail"><span class="error" id="profileEmailError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profilePhone">Phone:</label></td>
+                <td><input type="tel" id="profilePhone"><span class="error" id="profilePhoneError"></span></td>
+              </tr>
+              <tr>
+                <td><label for="profileUsername">Username:</label></td>
+                <td><input type="text" id="profileUsername" readonly></td>
+              </tr>
+              <tr>
+                <td><label for="profileRole">Role:</label></td>
+                <td><input type="text" id="profileRole" readonly></td>
+              </tr>
+            </table>
+          </fieldset>
+          <p class="hint" id="profileDetails"></p><br>
+          <input type="submit" class="btn" value="Save Profile">
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 Evercare Medical Center &middot; Web Technologies course project
+  </footer>
+
+  <script src="js/shohanData.js"></script>
+  <script src="js/alifData.js"></script>
+  <script src="js/saadData.js"></script>
+  <script src="js/najirData.js"></script>
+  <script src="js/shohanCommon.js"></script>
+  <script src="js/alifCommon.js"></script>
+  <script src="js/saadCommon.js"></script>
+  <script src="js/najirCommon.js"></script>
+  <script src="js/patient.js"></script>
+</body>
+
+</html>

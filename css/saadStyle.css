@@ -1,0 +1,5 @@
+/* Registration: choose a type of user first, then see its fields */
+.form-body,
+.type-fields {
+  display: none;
+}

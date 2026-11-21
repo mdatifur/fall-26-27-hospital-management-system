@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create an account at Evercare Medical Center">
+  <title>Register | Evercare Medical Center</title>
+  <link rel="stylesheet" href="css/shohanStyle.css">
+  <link rel="stylesheet" href="css/alifStyle.css">
+  <link rel="stylesheet" href="css/saadStyle.css">
+  <link rel="stylesheet" href="css/najirStyle.css">
+</head>
+
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo">Ever<span>care</span> Medical Center</a>
+    <div class="user-info">
+      <a href="login.html" class="btn btn-small btn-light">Login</a>
+      <a href="register.html" class="btn btn-small">Register</a>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <a href="index.html">Home</a>
+    <a href="index.html#search">Find a Doctor</a>
+    <a href="index.html#who">Who It's For</a>
+    <a href="index.html#how">How It Works</a>
+    <a href="index.html#hours">Visiting Hours</a>
+    <a href="index.html#contact">Contact Us</a>
+  </nav>
+
+  <main class="container">
+    <div class="auth-box wide">
+      <div class="card">
+        <h2 class="page-title">Create your account</h2>
+        <p class="page-subtitle">One registration page for patients, doctors and receptionists.
+          Choose who you are and the form will ask only for what we need. Fields marked * are required.</p>
+
+        <div id="registerMessage" class="message"></div>
+
+        <form id="registerForm" action="login.html" method="get" onsubmit="return validateRegister()">
+
+          <!--  STEP 1: TYPE OF USER Radio buttons share one name, so only one type can be picked. onchange calls showTypeFields(), which shows the matching fieldset. -->
+
+          <fieldset>
+            <legend>Step 1 &middot; I want to register as *</legend>
+            <div class="type-grid">
+              <label class="type-option" id="typeCardPatient" for="typePatient">
+                <input type="radio" id="typePatient" name="userType" value="Patient" onchange="showTypeFields()">
+                <strong>Patient</strong>
+                <span class="hint">Book appointments and see your health record.</span>
+              </label>
+              <label class="type-option" id="typeCardDoctor" for="typeDoctor">
+                <input type="radio" id="typeDoctor" name="userType" value="Doctor" onchange="showTypeFields()">
+                <strong>Doctor</strong>
+                <span class="hint">See patients and write prescriptions. Needs admin approval.</span>
+              </label>
+              <label class="type-option" id="typeCardReceptionist" for="typeReceptionist">
+                <input type="radio" id="typeReceptionist" name="userType" value="Receptionist"
+                  onchange="showTypeFields()">
+                <strong>Receptionist</strong>
+                <span class="hint">Register patients and manage the front desk. Needs admin approval.</span>
+              </label>
+            </div>
+            <span class="error" id="userTypeError"></span>
+            <p class="hint">Hospital admins are not created here. An existing admin manages admin access.</p>
+          </fieldset>
+
+          <!-- Everything below stays hidden until a type is chosen -->
+          <div id="formBody" class="form-body">
+
+            <!--  STEP 2: COMMON DETAILS  -->
+            <fieldset>
+              <legend>Step 2 &middot; Personal information</legend>
+              <table class="form-table">
+                <tr>
+                  <td><label for="fullName">Full Name: *</label></td>
+                  <td>
+                    <input type="text" id="fullName" name="fullName" placeholder="Your full name">
+                    <span class="error" id="fullNameError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="email">Email: *</label></td>
+                  <td>
+                    <input type="email" id="email" name="email" placeholder="you@example.com">
+                    <span class="error" id="emailError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="phone">Phone: *</label></td>
+                  <td>
+                    <input type="tel" id="phone" name="phone" placeholder="01XXXXXXXXX">
+                    <span class="error" id="phoneError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Gender: *</td>
+                  <td>
+                    <input type="radio" id="genderMale" name="gender" value="Male">
+                    <label for="genderMale" class="option-label">Male</label>
+                    <input type="radio" id="genderFemale" name="gender" value="Female">
+                    <label for="genderFemale" class="option-label">Female</label>
+                    <input type="radio" id="genderOther" name="gender" value="Other">
+                    <label for="genderOther" class="option-label">Other</label>
+                    <span class="error" id="genderError"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label for="dob">Date of birth: *</label></td>
+                  <td>
+                    <input type="date" id="dob" name="dob">
+                    <span class="error" id="dobError"></span>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+ <!-- commit4 -->
+
+<!-- commit5 -->
+
+            <input type="submit" id="registerButton" class="btn btn-block" value="Create Account">
+            <button type="button" class="btn btn-secondary btn-block" onclick="resetRegisterForm()">Clear form</button>
+          </div>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="login.html">Login here</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 Evercare Medical Center &middot; Web Technologies course project
+  </footer>
+
+  <script src="js/shohanData.js"></script>
+  <script src="js/alifData.js"></script>
+  <script src="js/saadData.js"></script>
+  <script src="js/najirData.js"></script>
+  <script src="js/shohanCommon.js"></script>
+  <script src="js/alifCommon.js"></script>
+  <script src="js/saadCommon.js"></script>
+  <script src="js/najirCommon.js"></script>
+  <script src="js/register.js"></script>
+</body>
+
+</html>
