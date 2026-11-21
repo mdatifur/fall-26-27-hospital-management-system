@@ -23,6 +23,17 @@ function containsText(text, keyword) {
   return String(text).toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
 }
 
+/*6. ARRAY HELPERS */
+
+// Finds the position (index) of the object whose id matches, or -1
+function findIndexById(list, id) {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].id === id) {
+      return i;
+    }
+  }
+  return -1;
+}
 // Returns the object whose id matches, or null when there is none
 function findById(list, id) {
   let index = findIndexById(list, id);
