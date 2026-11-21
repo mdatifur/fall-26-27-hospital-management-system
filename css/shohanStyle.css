@@ -815,4 +815,23 @@ input[type='checkbox'] {
   text-decoration: underline;
 }
 
-/* 11. ROLE-SPECIFIC PIECES */
+/* 12. RESPONSIVE: small screens (simple media query) */
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .form-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .form-table td:first-child {
+    width: 100%;
+    padding-top: 8px;
+  }
+
+  .bar-label {
+    width: 100px;
+  }
+}
