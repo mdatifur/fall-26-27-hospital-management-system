@@ -159,3 +159,27 @@ function getDateProblem(doctor, date) {
   return '';
 }
 
+
+function fillDoctorSelect(selectId, department) {
+  let select = document.getElementById(selectId);
+  let oldValue = select.value;
+
+  select.innerHTML = '';
+  addOption(select, '', '-- Select doctor --');
+  for (const doctor of doctors) {
+    if (
+      doctor.status === 'Active' &&
+      (department === '' || doctor.department === department)
+    ) {
+      addOption(
+        select,
+        doctor.id,
+        doctor.name + ' (' + doctor.specialization + ')',
+      );
+    }
+  }
+  select.value = oldValue;
+  if (select.value !== oldValue) {
+    select.value = '';
+  }
+}
