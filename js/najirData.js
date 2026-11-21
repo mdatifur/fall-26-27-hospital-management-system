@@ -1,3 +1,5 @@
+
+// Appointment times that can be booked (every 30 minutes)
 const timeSlots = [
   '09:00',
   '09:30',
@@ -17,7 +19,7 @@ const timeSlots = [
 //  Appointments
 
 let appointments = [
-  // Dr. Arif Rahman (D-101): 5 appointments 
+  // ----- Today, Dr. Arif Rahman (D-101): 5 appointments -----
   {
     id: 'A-2001',
     patientId: 'P-1003',

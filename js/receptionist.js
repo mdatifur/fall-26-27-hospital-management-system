@@ -1,5 +1,3 @@
-
-
 // The ids of the sections on this page (used by showSection in common.js)
 const sections = [
   'checkinSection',

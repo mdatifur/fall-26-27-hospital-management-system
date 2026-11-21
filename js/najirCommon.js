@@ -1,3 +1,8 @@
+
+/* 
+   7. DATE HELPERS Dates are kept as text "YYYY-MM-DD", like <input type="date"> gives.Date is a built-in JavaScript object; here we only use it to readtoday's date, count days and find the weekday. */
+
+// Today's date as "YYYY-MM-DD"
 function todayString() {
   let now = new Date();
   let month = now.getMonth() + 1;
@@ -11,15 +16,15 @@ function todayString() {
   return now.getFullYear() + '-' + month + '-' + day;
 }
 
-
+// Number of days from firstDate to secondDate (negative if secondDate is earlier)
 function daysBetween(firstDate, secondDate) {
-  let oneDay = 1000 * 60 * 60 * 24;
+  let oneDay = 1000 * 60 * 60 * 24; // milliseconds in one day
   let difference =
     new Date(secondDate + 'T00:00') - new Date(firstDate + 'T00:00');
   return Math.round(difference / oneDay);
 }
 
-
+// The current date and time as "YYYY-MM-DD HH:MM" (for the activity log)
 function nowString() {
   let now = new Date();
   let hours = now.getHours();
@@ -33,19 +38,21 @@ function nowString() {
   return todayString() + ' ' + hours + ':' + minutes;
 }
 
-
+// The weekday of a date text as "Sun", "Mon", ...
 function weekdayName(dateText) {
   let names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return names[new Date(dateText + 'T00:00').getDay()];
 }
 
-
+// true when the doctor sees patients on that date's weekday
 function doctorWorksOn(doctor, dateText) {
   return doctor.days.indexOf(weekdayName(dateText)) !== -1;
 }
 
 /*8. APPOINTMENT SLOT HELPERS (Receptionist and Patient booking forms) */
 
+// true when the doctor already has an active appointment at that date and time.
+// ignoreId is the appointment being edited (it must not conflict with itself).
 function isSlotBooked(doctorId, date, time, ignoreId) {
   for (const appointment of appointments) {
     if (
@@ -61,7 +68,7 @@ function isSlotBooked(doctorId, date, time, ignoreId) {
   return false;
 }
 
-
+// Adds one <option> to a <select> (createElement + appendChild)
 function addOption(select, value, text) {
   let option = document.createElement('option');
   option.value = value;
@@ -70,7 +77,8 @@ function addOption(select, value, text) {
   return option;
 }
 
-
+// Fills a <select> with the time slots; slots that are already booked are
+// shown as "(booked)" and cannot be chosen. Keeps the chosen time if possible.
 function fillTimeSlots(selectId, doctorId, date, ignoreId) {
   let select = document.getElementById(selectId);
   let oldValue = select.value;
@@ -92,10 +100,11 @@ function fillTimeSlots(selectId, doctorId, date, ignoreId) {
   }
   select.value = oldValue;
   if (select.value !== oldValue) {
-    select.value = '';
+    select.value = ''; // the old time is no longer free
   }
 }
 
+/* 12. KEEPING THE QUEUE AND THE APPOINTMENTS IN STEPThe queue array and the appointments array describe the same visit,so when one changes the other must change too. */
 
 function setAppointmentStatus(appointment, newStatus) {
   appointment.status = newStatus;
@@ -137,7 +146,7 @@ function removeQueueFor(appointmentId) {
   return kept;
 }
 
-//BOOKING DATE CHECK 
+/*13. BOOKING DATE CHECK (Receptionist and Patient booking forms) Returns "" when the date is fine, otherwise the error message to show. */
 
 function getDateProblem(doctor, date) {
   if (date === '') {
@@ -159,7 +168,8 @@ function getDateProblem(doctor, date) {
   return '';
 }
 
-
+// Fills a doctor <select> with the ACTIVE doctors of one department
+// (department "" = all departments). Keeps the chosen doctor if still listed.
 function fillDoctorSelect(selectId, department) {
   let select = document.getElementById(selectId);
   let oldValue = select.value;
