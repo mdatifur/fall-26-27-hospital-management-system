@@ -70,8 +70,27 @@
     </section>
 
 
-<!-- commit 1 -->
+<!-- UNIQUE FEATURE 1: SMART DOCTOR FINDER -->
 
+    <section id="doctorsSection" class="page-section">
+      <h2 class="page-title">Smart Doctor Finder</h2>
+      <p class="page-subtitle">Search by name, then filter by specialization or department.</p>
+
+      <div class="card">
+        <div class="search-bar">
+          <input type="text" id="finderSearch" placeholder="Search doctors by name..." onkeyup="renderDoctorCards()">
+          <select id="finderSpecialization" onchange="renderDoctorCards()">
+            <option value="All">All specializations</option>
+          </select>
+          <select id="finderDepartment" onchange="renderDoctorCards()">
+            <option value="All">All departments</option>
+          </select>
+        </div>
+        <p class="result-count" id="finderCount"></p>
+        <div id="doctorDetails"></div>
+        <div class="doctor-grid" id="doctorCards"></div>
+      </div>
+    </section>
 
     <!-- MY APPOINTMENTS: Create (book), Read, Search, Cancel -->
 
