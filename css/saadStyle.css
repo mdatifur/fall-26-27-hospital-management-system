@@ -1,0 +1,77 @@
+/* Registration: choose a type of user first, then see its fields */
+.form-body,
+.type-fields {
+  display: none;
+}
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.type-option {
+  display: block;
+  border: 2px solid #d5e6e2;
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  font-weight: normal;
+  background-color: white;
+  transition:
+    border-color 0.3s,
+    background-color 0.3s;
+}
+
+.type-option:hover {
+  border-color: #1f9d8a;
+}
+
+.type-option strong {
+  font-size: 1.05rem;
+  color: #1f2d33;
+}
+
+.type-option .hint {
+  display: block;
+  margin-top: 4px;
+}
+
+/* Added by JavaScript to the chosen card */
+.type-option.selected {
+  border-color: #1f9d8a;
+  background-color: #e8f7f2;
+}
+
+/* Patient: doctor cards */
+.doctor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.doctor-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 12px rgba(14, 77, 69, 0.08);
+  border-top: 6px solid #1f9d8a;
+  transition: transform 0.3s;
+}
+
+.doctor-card:hover {
+  transform: scale(1.02);
+}
+
+.doctor-card h4 {
+  color: #1f2d33;
+  font-size: 1.05rem;
+}
+
+.doctor-card p {
+  font-size: 0.9rem;
+  margin: 2px 0;
+}
+
+.doctor-card .btn {
+  margin: 8px 6px 0 0;
+}
