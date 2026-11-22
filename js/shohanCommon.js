@@ -1,7 +1,4 @@
-// ==============================================================
 // shohanCommon.js  |  OWNER: Shohan (Admin & Home)
-// Only Shohan edits this file. Pages load it in order: shohan, alif, saad, najir.
-// ==============================================================
 
 function showSection(sectionId) {
   for (let i = 0; i < sections.length; i++) {

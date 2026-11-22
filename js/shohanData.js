@@ -1,8 +1,5 @@
-// ==============================================================
 // shohanData.js  |  OWNER: Shohan (Admin & Home)
 // Only Shohan edits this file. Pages load it in order: shohan, alif, saad, najir.
-// Also holds sampleDate() which every other data file uses.
-// ==============================================================
 
 function sampleDate(daysFromToday) {
   let date = new Date();

@@ -1,4 +1,4 @@
-// OWNER: Shohan  |  Home module  |  only Shohan edits this file
+// OWNER: Shohan
 
 // Fill the department list from the departments array (createElement + appendChild)
 function fillDepartmentFilter() {

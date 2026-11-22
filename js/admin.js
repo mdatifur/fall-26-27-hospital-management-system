@@ -1,6 +1,3 @@
-// OWNER: Shohan  |  Admin module  |  only Shohan edits this file
-
-// The ids of the sections on this page (used by showSection in common.js)
 const sections = [
   'statsSection',
   'workloadSection',
@@ -26,7 +23,7 @@ let editPatientIndex = -1;
 function generateReport() {
   let today = todayString();
 
-  // ----- Appointments: one loop counts everything -----
+  //  Appointments
   let todayCount = 0;
   let statusNames = [
     'Pending',
@@ -35,7 +32,7 @@ function generateReport() {
     'Completed',
     'Cancelled',
   ];
-  let statusTotals = [0, 0, 0, 0, 0]; // statusTotals[i] belongs to statusNames[i]
+  let statusTotals = [0, 0, 0, 0, 0]; 
 
   for (const appointment of appointments) {
     let position = statusNames.indexOf(appointment.status);
@@ -47,7 +44,7 @@ function generateReport() {
     }
   }
 
-  // ----- Waiting patients: queue tokens of today that are still waiting -----
+  //  Waiting patients: queue tokens of today that are still waiting 
   let waiting = 0;
   for (const entry of queue) {
     if (entry.date === today && entry.status === 'Waiting') {
@@ -55,7 +52,7 @@ function generateReport() {
     }
   }
 
-  // ----- Department-wise patient counts -----
+  //  Department-wise patient counts 
   // For each department we collect the ids of DIFFERENT patients (seen array),
   // so a patient with two visits is counted once.
   let deptNames = [];
@@ -76,7 +73,7 @@ function generateReport() {
     deptTotals.push(seen.length);
   }
 
-  // ----- Show the numbers with innerHTML -----
+  //  Show the numbers with innerHTML 
   document.getElementById('statDoctors').innerHTML = doctors.length;
   document.getElementById('statPatients').innerHTML = patients.length;
   document.getElementById('statAppointments').innerHTML = appointments.length;
@@ -340,7 +337,7 @@ function saveMedicine() {
   let minText = document.getElementById('medMin').value;
   let expiry = document.getElementById('medExpiry').value;
 
-  // ----- Validation -----
+  //  Validation 
   let isValid = true;
   clearErrors(['medName', 'medCategory', 'medQuantity', 'medMin', 'medExpiry']);
 
@@ -376,7 +373,7 @@ function saveMedicine() {
     return false;
   }
 
-  // ----- Save -----
+  //  Save 
   if (editMedicineIndex === -1) {
     // CREATE: build a new object and push() it to the end of the array
     let newMedicine = {

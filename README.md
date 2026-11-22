@@ -293,8 +293,7 @@ expiring soon" always have something to show.
 
 ## 14. Future improvements
 
-- Add a **backend and a database** (for example Node.js with a SQL database) so
-  data is saved and shared.
+- Add a **backend and a database** (MySQL database) so data is saved and shared.
 - Real authentication (hashed passwords, sessions or tokens) and server-side
   role checks.
 - Live queue updates between the Doctor, Receptionist and Patient screens.
@@ -322,3 +321,6 @@ Details are in [CONTRIBUTING.md](CONTRIBUTING.md).
 ---
 
 _Web Technologies course project – fictional data only._
+
+This is our Web Technologies course project Course Teacher: WAHIDUL ALAM RIYAD
+Section: V
